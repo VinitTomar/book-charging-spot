@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "projects": {
+    "web-apis": {
+      "root": "apps/web-apis",
+      "sourceRoot": "apps/web-apis/src",
+      "projectType": "application",
+      "prefix": "web-apis",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist/apps/web-apis",
+            "main": "apps/web-apis/src/main.ts",
+            "tsConfig": "apps/web-apis/tsconfig.app.json",
+            "assets": ["apps/web-apis/src/assets"]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/web-apis/src/environments/environment.ts",
+                  "with": "apps/web-apis/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "web-apis:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/web-apis/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/web-apis/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/nest"
+  },
+  "defaultProject": "web-apis"
+}

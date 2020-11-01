@@ -1,0 +1,30 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  fullname: String!
+  email: String!
+  password: String!
+  userType: UserTypes!
+}
+
+enum UserTypes {
+  PCI_OWNER
+  E_VEHICLE_OWNER
+}
+
+type Query {
+  Users: [User]!
+}
+
+type Mutation {
+  AddUser(addUser: AddUser!): User!
+}
+
+input AddUser {
+  fullname: String!
+  email: String!
+  password: String!
+  userType: UserTypes!
+}

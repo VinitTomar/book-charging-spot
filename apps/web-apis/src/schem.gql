@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type User {
+  id: ID!
   fullname: String!
   email: String!
   password: String!
@@ -20,6 +21,7 @@ type Query {
 
 type Mutation {
   AddUser(addUser: AddUser!): User!
+  UpdateUser(updateUser: UpdateUser!): User!
 }
 
 input AddUser {
@@ -27,4 +29,12 @@ input AddUser {
   email: String!
   password: String!
   userType: UserTypes!
+}
+
+input UpdateUser {
+  id: ID!
+  fullname: String
+  email: String
+  password: String
+  userType: UserTypes
 }

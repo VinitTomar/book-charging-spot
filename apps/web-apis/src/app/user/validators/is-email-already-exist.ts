@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { registerDecorator, ValidationOptions, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator';
 import { UserService } from '../user.service';
 
@@ -10,11 +11,12 @@ import { UserService } from '../user.service';
 export class IsEmailAlreadyExistConstraint implements ValidatorConstraintInterface {
 
   constructor(
-    private _userService: UserService
+    private _moduleRef: ModuleRef
   ) { }
 
   async validate(email: string): Promise<boolean> {
-    const userByEmail = await this._userService.findByEmail(email);
+    const userService: UserService = this._moduleRef.get('UserService');
+    const userByEmail = await userService.findByEmail(email);
     return !userByEmail;
   }
 

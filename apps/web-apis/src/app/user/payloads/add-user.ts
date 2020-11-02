@@ -3,4 +3,4 @@ import { User } from '../models/user.model';
 
 
 @InputType()
-export class AddUser extends OmitType(User, [], InputType) { }
+export class AddUser extends OmitType(User, ['id'], InputType) { }

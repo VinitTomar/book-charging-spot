@@ -1,6 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { IsEmail } from 'class-validator';
 import { UserTypes } from '../config/user-types';
+import { IsEmailAlreadyExist } from '../validators/is-email-already-exist';
 
 
 @ObjectType()
@@ -10,6 +11,7 @@ export class User {
   fullname: string;
 
   @IsEmail()
+  @IsEmailAlreadyExist()
   @Field()
   email: string;
 

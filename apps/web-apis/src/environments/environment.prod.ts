@@ -7,5 +7,6 @@ export const environment = {
     database: process.env.DB_DATABASE_NAME,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-  }
+  },
+  debug: process.env.DEBUG.toLowerCase() !== 'false'
 };

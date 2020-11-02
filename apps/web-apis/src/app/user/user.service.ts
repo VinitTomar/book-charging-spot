@@ -40,6 +40,7 @@ export class UserService {
   }
 
   async addUser(newUser: AddUser): Promise<User> {
+    this.users.push(newUser as User);
     return (newUser as User);
   }
 

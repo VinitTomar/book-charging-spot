@@ -7,5 +7,9 @@ export const environment = {
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
   },
+  mailTrap: {
+    user: process.env.MAILTRAP_USER,
+    pass: process.env.MAILTRAP_PASS
+  },
   debug: process.env.DEBUG.toLowerCase() !== 'false'
 };

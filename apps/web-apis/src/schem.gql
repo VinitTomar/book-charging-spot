@@ -6,8 +6,8 @@ type User {
   id: ID!
   fullname: String!
   email: String!
-  password: String!
   userType: UserTypes!
+  emailVerified: Boolean
 }
 
 enum UserTypes {
@@ -22,19 +22,31 @@ type Query {
 type Mutation {
   AddUser(addUser: AddUser!): User!
   UpdateUser(updateUser: UpdateUser!): User!
+  VerifyEmail(verifyEmail: VerifyEmail!): VerifyEmailMessageTypes!
 }
 
 input AddUser {
   fullname: String!
   email: String!
-  password: String!
   userType: UserTypes!
+  emailVerified: Boolean
+  password: String!
 }
 
 input UpdateUser {
   id: ID!
   fullname: String
   email: String
-  password: String
   userType: UserTypes
+  emailVerified: Boolean
+}
+
+enum VerifyEmailMessageTypes {
+  INVALID_DETAILS
+  EMAIL_VERIFIED
+}
+
+input VerifyEmail {
+  email: String!
+  token: String!
 }

@@ -1,3 +1,4 @@
+import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,6 +19,18 @@ import { UserModule } from './user/user.module';
       path: '/api',
       context: (...req) => ({ ...req }),
       debug: environment.debug
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.mailtrap.io',
+        port: 2525,
+        ignoreTLS: true,
+        secure: false,
+        auth: { ...environment.mailTrap },
+      },
+      defaults: {
+        from: '"No Reply" <no-reply@localhost>',
+      },
     }),
     UserModule
   ],

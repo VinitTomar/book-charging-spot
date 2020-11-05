@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsEmail, Matches, MaxLength, MinLength } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UserTypes } from '../config/user-types';
 import { IsEmailAlreadyExist } from '../validators/is-email-already-exist';
 
@@ -32,12 +32,24 @@ export class User {
   @MaxLength(50, {
     message: 'Password is too long. Maxlength should be 50.',
   })
-  @Field()
   password: string;
 
   @Column({ type: 'varchar', length: 50 })
   @Field(() => UserTypes)
   userType: UserTypes;
+
+  @CreateDateColumn({ type: "timestamp" })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: "timestamp" })
+  updatedAt: Date;
+
+  @Column({ type: "boolean", default: false })
+  @Field({ nullable: true })
+  emailVerified: boolean;
+
+  @Column({ type: "varchar", length: 500, nullable: true })
+  emailVerificationToken: string;
 
 }
 

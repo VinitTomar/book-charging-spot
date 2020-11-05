@@ -1,7 +1,9 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { VerifyEmailMessageTypes } from './config/verify-email-message-types';
 import { User } from './models/user.model';
 import { AddUser } from './payloads/add-user';
 import { UpdateUser } from './payloads/update-user';
+import { VerifyEmail } from './payloads/verify-email';
 import { UserService } from './user.service';
 
 @Resolver(() => User)
@@ -24,6 +26,11 @@ export class UserResolver {
   @Mutation(() => User, { name: 'UpdateUser' })
   async updateUser(@Args('updateUser') updateUser: UpdateUser) {
     return await this._userService.updateUser(updateUser);
+  }
+
+  @Mutation(() => VerifyEmailMessageTypes, { name: "VerifyEmail" })
+  async verifyEmail(@Args('verifyEmail') verifyEmail: VerifyEmail) {
+    return await this._userService.verifyEmail(verifyEmail);
   }
 
 }

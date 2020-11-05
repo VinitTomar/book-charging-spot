@@ -2,6 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { generateString, InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { PasswordService } from '../auth/password.service';
 import { VerifyEmailMessageTypes } from './config/verify-email-message-types';
 import { User } from './models/user.model';
 import { AddUser } from './payloads/add-user';
@@ -13,7 +14,8 @@ export class UserService {
 
   constructor(
     @InjectRepository(User) private readonly _userReposity: Repository<User>,
-    private readonly _mailerService: MailerService
+    private readonly _mailerService: MailerService,
+    private readonly _passwordService: PasswordService
   ) { }
 
   async findByEmail(email: string): Promise<User> {
@@ -31,6 +33,8 @@ export class UserService {
   async addUser(addUser: AddUser): Promise<User> {
     addUser = this._userReposity.create(addUser);
     addUser.emailVerificationToken = generateString();
+    addUser.password = await this._passwordService.generatePasswordHash(addUser.password);
+
     const newUser = await this._userReposity.save(addUser);
     this._mailerService.sendMail({
       to: newUser.email,
@@ -41,6 +45,7 @@ export class UserService {
         Email: ${addUser.email} <br/>
         Token: ${addUser.emailVerificationToken}`,
     });
+
     return newUser;
   }
 

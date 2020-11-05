@@ -11,5 +11,6 @@ export const environment = {
     user: process.env.MAILTRAP_USER,
     pass: process.env.MAILTRAP_PASS
   },
-  debug: process.env.DEBUG.toLowerCase() !== 'false'
+  debug: process.env.DEBUG.toLowerCase() !== 'false',
+  bcryptHashRounds: process.env.BCRYPT_HASH_ROUNDS
 };

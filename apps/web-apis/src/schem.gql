@@ -39,6 +39,7 @@ input UpdateUser {
   email: String
   userType: UserTypes
   emailVerified: Boolean
+  password: String
 }
 
 enum VerifyEmailMessageTypes {

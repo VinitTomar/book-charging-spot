@@ -1,12 +1,16 @@
 export const environment = {
   production: true,
   database: {
-    type: process.env.DB_TYPE,
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
+    port: +process.env.DB_PORT,
     database: process.env.DB_DATABASE_NAME,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
   },
-  debug: process.env.DEBUG.toLowerCase() !== 'false'
+  mailTrap: {
+    user: process.env.MAILTRAP_USER,
+    pass: process.env.MAILTRAP_PASS
+  },
+  debug: process.env.DEBUG.toLowerCase() !== 'false',
+  bcryptHashRounds: process.env.BCRYPT_HASH_ROUNDS
 };

@@ -1,5 +1,5 @@
 import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { generateString, InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PasswordService } from '../auth/password.service';
@@ -49,8 +49,12 @@ export class UserService {
     return newUser;
   }
 
-  async updateUser(updateUser: UpdateUser): Promise<User> {
-    let currentUser = await this.findById(updateUser.id);
+  async updateUser(userId: string, updateUser: UpdateUser): Promise<User> {
+    let currentUser = await this.findById(userId);
+    if (!currentUser) {
+      throw new ForbiddenException();
+    }
+
     currentUser = Object.assign(currentUser, updateUser);
     const updatedUser = await this._userReposity.save(currentUser);
     return updatedUser;

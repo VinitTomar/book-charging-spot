@@ -26,7 +26,7 @@ export class User {
   email: string;
 
   @Column({ type: 'varchar', length: 255 })
-  @MinLength(7, {
+  @MinLength(3, {
     message: 'Password is too short. Minlength should be 7.',
   })
   @MaxLength(50, {

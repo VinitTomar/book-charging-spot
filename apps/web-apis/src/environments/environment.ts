@@ -12,5 +12,9 @@ export const environment = {
     pass: process.env.MAILTRAP_PASS
   },
   debug: process.env.DEBUG.toLowerCase() !== 'false',
-  bcryptHashRounds: process.env.BCRYPT_HASH_ROUNDS
+  bcryptHashRounds: +process.env.BCRYPT_HASH_ROUNDS,
+  jwt: {
+    secret: process.env.JWT_GENERATION_SECRET,
+    expiresIn: process.env.JWT_TOKEN_EXPIRATION
+  }
 };

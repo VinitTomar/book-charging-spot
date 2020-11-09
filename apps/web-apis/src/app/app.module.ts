@@ -1,3 +1,4 @@
+import { AddressModule } from './address/address.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -33,7 +34,8 @@ import { UserModule } from './user/user.module';
         from: '"No Reply" <no-reply@localhost>',
       },
     }),
-    UserModule
+    AddressModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],

@@ -17,6 +17,15 @@ enum UserTypes {
 
 type Query {
   Users: [User]!
+  JwtToken(login: Login!): JwtToken!
+}
+
+"""Jwt Token custom scalar type"""
+scalar JwtToken
+
+input Login {
+  email: String!
+  password: String!
 }
 
 type Mutation {
@@ -34,7 +43,6 @@ input AddUser {
 }
 
 input UpdateUser {
-  id: ID!
   fullname: String
   email: String
   userType: UserTypes

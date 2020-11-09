@@ -17,7 +17,8 @@ import { UserModule } from './user/user.module';
     GraphQLModule.forRoot({
       autoSchemaFile: 'apps/web-apis/src/schem.gql',
       path: '/api',
-      context: (...req) => ({ ...req }),
+      // context: (...req) => ({ ...req }),
+      context: ({ req }) => ({ req }),
       debug: environment.debug
     }),
     MailerModule.forRoot({

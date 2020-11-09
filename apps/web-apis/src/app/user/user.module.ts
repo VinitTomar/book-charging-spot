@@ -5,17 +5,21 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './models/user.model';
 import { IsEmailAlreadyExistConstraint } from './validators/is-email-already-exist';
 import { AuthModule } from '../auth/auth.module';
+import { LoginResolver } from './login.resolver';
+import { JwtTokenScalar } from './config/jwt-token-scalar-types';
 
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    AuthModule
+    AuthModule,
   ],
   providers: [
     UserService,
     UserResolver,
-    IsEmailAlreadyExistConstraint
+    LoginResolver,
+    IsEmailAlreadyExistConstraint,
+    JwtTokenScalar
   ]
 })
 export class UserModule {

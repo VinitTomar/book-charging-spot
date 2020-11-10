@@ -1,8 +1,10 @@
 import { Module } from '@nestjs/common';
+import { UserAddressService } from './user-address.service';
 
 @Module({
   imports: [],
-  controllers: [],
-  providers: [],
+  providers: [
+    UserAddressService,
+  ],
 })
 export class AddressModule { }

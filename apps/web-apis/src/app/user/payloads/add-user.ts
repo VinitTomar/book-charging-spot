@@ -4,7 +4,7 @@ import { User } from '../models/user.model';
 
 
 @InputType()
-export class AddUser extends OmitType(User, ['id'], InputType) {
+export class AddUser extends OmitType(User, ['id', 'addresses'], InputType) {
 
   @MinLength(3, {
     message: 'Password is too short. Minlength should be 3.',

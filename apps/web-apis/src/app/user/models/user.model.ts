@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsEmail, Matches, MaxLength } from 'class-validator';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { UserAddress } from '../../address/entity/user-address';
 import { UserTypes } from '../config/user-types';
 import { IsEmailAlreadyExist } from '../validators/is-email-already-exist';
 
@@ -46,6 +47,9 @@ export class User {
 
   @Column({ type: "varchar", length: 500, nullable: true })
   emailVerificationToken: string;
+
+  @OneToMany(() => UserAddress, (address: UserAddress) => address.user)
+  addresses: UserAddress[]
 
 }
 

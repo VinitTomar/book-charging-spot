@@ -59,7 +59,6 @@ input AddUserAddress {
   district: String!
   state: String!
   pincode: String!
-  current: Boolean!
 }
 
 input UpdateAddress {

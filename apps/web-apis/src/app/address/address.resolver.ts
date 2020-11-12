@@ -34,13 +34,18 @@ export class AddressResolver {
 
   @Mutation(() => UserAddress, { name: 'UpdateUserAddress' })
   async updateUserAddress(@Args('updateUserAddress') updateUserAddress: UpdateAddress, @CurrentUser() currentUser: JwtUser) {
-    return await this._userAddressService.addUserAddress(updateUserAddress, currentUser);
+    return await this._userAddressService.updateUserAddress(updateUserAddress.id, updateUserAddress, currentUser);
   }
 
 
   @Mutation(() => String, { name: 'DeleteUserAddress' })
   async deleteUserAddress(@Args('id', { type: () => ID }) addressId: string, @CurrentUser() currentUser: JwtUser) {
-    return await this._userAddressService.deleteUserAddress(addressId, currentUser);
+    const deltedRecords = await this._userAddressService.deleteUserAddress(addressId, currentUser);
+    if (deltedRecords.affected > 0) {
+      return `Address deleted with id : ${addressId}`;
+    }
+
+    return `No address deleted`;
   }
 
 

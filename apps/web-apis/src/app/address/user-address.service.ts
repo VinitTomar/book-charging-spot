@@ -23,9 +23,10 @@ export class UserAddressService {
   }
 
   async addUserAddress(addUserAddress: AddUserAddress, user: User): Promise<UserAddress> {
-    const newUserAddress = this._userAddressRepository.create(addUserAddress);
-    newUserAddress.user = user;
-    return await this._userAddressRepository.save(newUserAddress);
+    const newAddress = this._userAddressRepository.create(addUserAddress);
+    newAddress.user = user;
+
+    return await this._userAddressRepository.save(newAddress);
   }
 
   async updateUserAddress(addressId: string, updateAddress: UpdateAddress, user: User): Promise<UserAddress> {
@@ -35,6 +36,7 @@ export class UserAddressService {
     }
 
     currentAddress = Object.assign(currentAddress, updateAddress);
+
     return await this._userAddressRepository.save(currentAddress);
   }
 

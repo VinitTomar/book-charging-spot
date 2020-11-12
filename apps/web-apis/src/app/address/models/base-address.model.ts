@@ -32,7 +32,7 @@ export class BaseAddress {
   state: string;
 
   @Column({ type: 'varchar', length: 6 })
-  @Length(7, 7)
+  @Length(6, 6)
   @Field()
   pincode: string;
 

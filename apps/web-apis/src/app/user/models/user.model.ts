@@ -1,6 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { IsEmail, Matches, MaxLength, MinLength } from 'class-validator';
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { IsEmail, Matches, MaxLength } from 'class-validator';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { UserAddress } from '../../address/models/user-address';
 import { UserTypes } from '../config/user-types';
 import { IsEmailAlreadyExist } from '../validators/is-email-already-exist';
 
@@ -16,22 +17,18 @@ export class User {
   @Matches(/^[a-zA-Z ]+$/, {
     message: 'Fullname $value is invalid. Only alphabets and space allowed.'
   })
+  @MaxLength(255)
   @Field()
   fullname: string;
 
   @Column({ type: 'varchar', length: 255 })
   @IsEmail()
   @IsEmailAlreadyExist()
+  @MaxLength(255)
   @Field()
   email: string;
 
   @Column({ type: 'varchar', length: 255 })
-  @MinLength(3, {
-    message: 'Password is too short. Minlength should be 7.',
-  })
-  @MaxLength(50, {
-    message: 'Password is too long. Maxlength should be 50.',
-  })
   password: string;
 
   @Column({ type: 'varchar', length: 50 })
@@ -51,6 +48,8 @@ export class User {
   @Column({ type: "varchar", length: 500, nullable: true })
   emailVerificationToken: string;
 
-}
+  @OneToMany(() => UserAddress, (address: UserAddress) => address.user)
+  @Field(() => [UserAddress], { nullable: 'itemsAndList' })
+  addresses: UserAddress[]
 
-export type Users = User[];
+}

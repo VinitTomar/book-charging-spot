@@ -2,12 +2,25 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type UserAddress {
+  id: ID!
+  line1: String!
+  line2: String!
+  landmark: String!
+  district: String!
+  state: String!
+  pincode: String!
+  current: Boolean!
+  user: User!
+}
+
 type User {
   id: ID!
   fullname: String!
   email: String!
   userType: UserTypes!
   emailVerified: Boolean
+  addresses: [UserAddress]
 }
 
 enum UserTypes {
@@ -16,6 +29,8 @@ enum UserTypes {
 }
 
 type Query {
+  UserAddresses: [UserAddress]
+  UserAddress(id: ID!): UserAddress!
   Users: [User]!
   JwtToken(login: Login!): JwtToken!
 }
@@ -29,9 +44,32 @@ input Login {
 }
 
 type Mutation {
+  AddUserAddress(addUserAddress: AddUserAddress!): UserAddress!
+  UpdateUserAddress(updateUserAddress: UpdateAddress!): UserAddress!
+  DeleteUserAddress(id: ID!): String!
   AddUser(addUser: AddUser!): User!
   UpdateUser(updateUser: UpdateUser!): User!
   VerifyEmail(verifyEmail: VerifyEmail!): VerifyEmailMessageTypes!
+}
+
+input AddUserAddress {
+  line1: String!
+  line2: String!
+  landmark: String!
+  district: String!
+  state: String!
+  pincode: String!
+}
+
+input UpdateAddress {
+  id: ID!
+  line1: String
+  line2: String
+  landmark: String
+  district: String
+  state: String
+  pincode: String
+  current: Boolean
 }
 
 input AddUser {

@@ -7,8 +7,7 @@ import { User } from './models/user.model';
 import { Login } from './payloads/login';
 import { UserService } from './user.service';
 
-
-@Resolver(() => String)
+@Resolver(() => JwtToken)
 export class LoginResolver {
 
   constructor(

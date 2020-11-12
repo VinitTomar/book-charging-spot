@@ -1,7 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsEmail, Matches, MaxLength } from 'class-validator';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { UserAddress } from '../../address/entity/user-address';
+import { UserAddress } from '../../address/models/user-address';
 import { UserTypes } from '../config/user-types';
 import { IsEmailAlreadyExist } from '../validators/is-email-already-exist';
 
@@ -53,5 +53,3 @@ export class User {
   addresses: UserAddress[]
 
 }
-
-export type Users = User[];

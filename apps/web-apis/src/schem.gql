@@ -8,6 +8,7 @@ type User {
   email: String!
   userType: UserTypes!
   emailVerified: Boolean
+  addresses: [UserAddress]
 }
 
 enum UserTypes {
@@ -15,7 +16,21 @@ enum UserTypes {
   E_VEHICLE_OWNER
 }
 
+type UserAddress {
+  id: ID!
+  line1: String!
+  line2: String!
+  landmark: String!
+  district: String!
+  state: String!
+  pincode: String!
+  current: Boolean!
+  user: User!
+}
+
 type Query {
+  UserAddresses: [UserAddress]
+  UserAddress(id: ID!): UserAddress!
   Users: [User]!
   JwtToken(login: Login!): JwtToken!
 }

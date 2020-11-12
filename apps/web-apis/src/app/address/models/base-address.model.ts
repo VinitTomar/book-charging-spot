@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Length } from 'class-validator';
 import { Column, PrimaryGeneratedColumn } from 'typeorm';
 
-ObjectType({
+@ObjectType({
   isAbstract: true
 })
 export class BaseAddress {

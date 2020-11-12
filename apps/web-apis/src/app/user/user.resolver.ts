@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { JwtAuth } from '../auth/jwt-auth.guard';
+import { JwtUser } from '../auth/model/jwt-user';
 import { CurrentUser } from '../util/current-user-decorator';
 import { VerifyEmailMessageTypes } from './config/verify-email-message-types';
 import { User } from './models/user.model';
@@ -29,7 +30,7 @@ export class UserResolver {
 
   @Mutation(() => User, { name: 'UpdateUser' })
   @UseGuards(JwtAuth)
-  async updateUser(@Args('updateUser') updateUser: UpdateUser, @CurrentUser() currentUser: unknown) {
+  async updateUser(@Args('updateUser') updateUser: UpdateUser, @CurrentUser() currentUser: JwtUser) {
     return await this._userService.updateUser(currentUser['userId'], updateUser);
   }
 

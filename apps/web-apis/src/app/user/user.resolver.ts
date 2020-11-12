@@ -31,7 +31,7 @@ export class UserResolver {
   @Mutation(() => User, { name: 'UpdateUser' })
   @UseGuards(JwtAuth)
   async updateUser(@Args('updateUser') updateUser: UpdateUser, @CurrentUser() currentUser: JwtUser) {
-    return await this._userService.updateUser(currentUser['userId'], updateUser);
+    return await this._userService.updateUser(currentUser.id, updateUser);
   }
 
   @Mutation(() => VerifyEmailMessageTypes, { name: "VerifyEmail" })

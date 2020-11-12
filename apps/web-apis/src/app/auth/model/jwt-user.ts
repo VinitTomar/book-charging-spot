@@ -1,4 +1,5 @@
-export interface JwtUser {
-  userId: string;
-  username: string;
+import { User } from '../../user/models/user.model';
+
+export class JwtUser extends User {
+
 }

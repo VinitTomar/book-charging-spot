@@ -19,6 +19,10 @@ export class LoginResolver {
   @Query(() => JwtToken, { name: 'JwtToken' })
   async getJwtToken(@Args('login') loginDetail: Login) {
     const user: User = await this._userService.findByEmail(loginDetail.email);
+    if (!user) {
+      throw new UnauthorizedException('Invalid login credentials.');
+    }
+
     const passwordMatched = await this._passwordService.matchPassword(loginDetail.password, user.password);
     if (passwordMatched) {
       return new JwtToken(await this._tokenService.getToken({
@@ -26,7 +30,7 @@ export class LoginResolver {
         sub: user.id
       }));
     } else {
-      throw new UnauthorizedException('Invalid login credentials.', 'Email or password is invalid.');
+      throw new UnauthorizedException('Invalid login credentials.');
     }
   }
 

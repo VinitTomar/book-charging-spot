@@ -26,6 +26,11 @@ export class UserAddressService {
     const newAddress = this._userAddressRepository.create(addUserAddress);
     newAddress.user = user;
 
+    const userWithAddress = await this._userReposity.findOne(user.id, { relations: ['addresses'] })
+
+    if (userWithAddress.addresses.length === 0)
+      newAddress.current = true;
+
     return await this._userAddressRepository.save(newAddress);
   }
 

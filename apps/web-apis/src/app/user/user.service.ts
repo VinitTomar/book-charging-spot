@@ -2,6 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { generateString, InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UserAddress } from '../address/models/user-address';
 import { PasswordService } from '../auth/password.service';
 import { VerifyEmailMessageTypes } from './config/verify-email-message-types';
 import { User } from './models/user.model';
@@ -71,6 +72,10 @@ export class UserService {
     }
 
     return VerifyEmailMessageTypes.INVALID_DETAILS;
+  }
+
+  async getUserAddresses(userId: string): Promise<UserAddress[]> {
+    return (await this._userReposity.findOne(userId, { relations: ['addresses'] })).addresses;
   }
 
 }

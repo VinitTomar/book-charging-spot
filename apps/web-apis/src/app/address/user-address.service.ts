@@ -50,4 +50,8 @@ export class UserAddressService {
     return deletedResult;
   }
 
+  async getAddressUser(addressId: string): Promise<User> {
+    return (await this._userAddressRepository.findOne(addressId, { relations: ['user'] })).user;
+  }
+
 }

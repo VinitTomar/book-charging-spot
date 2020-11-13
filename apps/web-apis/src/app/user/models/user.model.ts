@@ -49,7 +49,7 @@ export class User {
   emailVerificationToken: string;
 
   @OneToMany(() => UserAddress, (address: UserAddress) => address.user)
-  @Field(() => [UserAddress], { nullable: 'itemsAndList' })
+  // @Field(() => [UserAddress], { nullable: 'itemsAndList' })
   addresses: UserAddress[]
 
 }

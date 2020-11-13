@@ -1,5 +1,6 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { UserAddress } from '../address/models/user-address';
 import { JwtAuth } from '../auth/jwt-auth.guard';
 import { JwtUser } from '../auth/model/jwt-user';
 import { CurrentUser } from '../util/current-user-decorator';
@@ -37,6 +38,12 @@ export class UserResolver {
   @Mutation(() => VerifyEmailMessageTypes, { name: "VerifyEmail" })
   async verifyEmail(@Args('verifyEmail') verifyEmail: VerifyEmail) {
     return await this._userService.verifyEmail(verifyEmail);
+  }
+
+
+  @ResolveField(() => [UserAddress], { name: 'addresses', nullable: 'itemsAndList' })
+  async getUserAddress(@Parent() user: User) {
+    return await this._userService.getUserAddresses(user.id);
   }
 
 }

@@ -29,10 +29,19 @@ enum UserTypes {
 }
 
 type Query {
+  ChargerType(chargerType: ChargerTypes!): String!
   UserAddresses: [UserAddress]
   UserAddress(id: ID!): UserAddress!
   Users: [User]!
   JwtToken(login: Login!): JwtToken!
+}
+
+enum ChargerTypes {
+  FAST_CCS
+  FAST_CHA_DE_MO
+  FAST_TYPE_2_AC
+  MODERATE_BHARAT_DC
+  SLOW_BHARAT_AC
 }
 
 """Jwt Token custom scalar type"""

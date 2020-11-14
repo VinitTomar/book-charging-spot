@@ -1,11 +1,14 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { MaxLength } from 'class-validator';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../../user/models/user.model';
+import { IsPciNameAlreadyExist } from '../validators/is-pci-name-already-exist';
 import { GpsCoordinate } from './gps-coordinate.model';
 import { PciAddress } from './pci-address.model';
 import { PciCharger } from './pci-charger.model';
 
 @Entity({
-  name: Pci.name
+  name: 'Pci'
 })
 @ObjectType()
 export class Pci {
@@ -15,10 +18,13 @@ export class Pci {
   id: string;
 
   @Column({ type: 'varchar', length: 255 })
+  @MaxLength(255)
+  @IsPciNameAlreadyExist()
   @Field()
   name: string;
 
   @Column({ type: 'varchar', length: 255 })
+  @MaxLength(255)
   @Field()
   highwayName: string;
 
@@ -26,12 +32,18 @@ export class Pci {
   @Field(() => [PciCharger])
   chargers: PciCharger[];
 
-  @OneToOne(() => PciAddress, (pciAddress: PciAddress) => pciAddress.pci)
+  @OneToOne(() => PciAddress)
+  @JoinColumn()
   @Field(() => PciAddress)
   address: PciAddress;
 
-  @OneToOne(() => GpsCoordinate, (coordinates: GpsCoordinate) => coordinates.pci)
+  @OneToOne(() => GpsCoordinate)
+  @JoinColumn()
   @Field(() => GpsCoordinate)
   gpsCoordinate: GpsCoordinate;
+
+  @ManyToOne(() => User, (owner: User) => owner.pcis)
+  @Field(() => User)
+  owner: User;
 
 }

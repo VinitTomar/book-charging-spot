@@ -5,7 +5,7 @@ import { AddPci } from './add-pci';
 
 @InputType()
 export class UpdatePci extends IntersectionType(
-  PickType(Pci, ['id'] as const),
+  PickType(Pci, ['id'] as const, InputType),
   PartialType(AddPci)
 )
 { }

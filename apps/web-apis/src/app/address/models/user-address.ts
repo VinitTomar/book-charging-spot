@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 import { User } from '../../user/models/user.model';
 import { BaseAddress } from '../models/base-address.model';
 
@@ -8,6 +8,10 @@ import { BaseAddress } from '../models/base-address.model';
 })
 @ObjectType()
 export class UserAddress extends BaseAddress {
+
+  @Column({ default: false })
+  @Field()
+  current: boolean;
 
   @ManyToOne(() => User, (user: User) => user.addresses)
   @Field(() => User)

@@ -1,8 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Max, Min } from 'class-validator';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Pci } from './pci.model';
-
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({
   name: GpsCoordinate.name
@@ -25,9 +23,5 @@ export class GpsCoordinate {
   @Max(180)
   @Field()
   longitude: number;
-
-  @OneToOne(() => Pci, (pci: Pci) => pci.gpsCoordinate)
-  @Field(() => Pci)
-  pci: Pci;
 
 }

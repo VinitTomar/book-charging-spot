@@ -2,6 +2,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { IsEmail, Matches, MaxLength } from 'class-validator';
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { UserAddress } from '../../address/models/user-address';
+import { Pci } from '../../pci/models/pci.model';
 import { UserTypes } from '../config/user-types';
 import { IsEmailAlreadyExist } from '../validators/is-email-already-exist';
 
@@ -51,5 +52,9 @@ export class User {
   @OneToMany(() => UserAddress, (address: UserAddress) => address.user)
   // @Field(() => [UserAddress], { nullable: 'itemsAndList' })
   addresses: UserAddress[]
+
+  @OneToMany(() => Pci, (pci: Pci) => pci.owner)
+  @Field(() => [Pci])
+  pcis: Pci[]
 
 }

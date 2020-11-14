@@ -2,6 +2,7 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { JwtAuth } from '../auth/jwt-auth.guard';
 import { JwtUser } from '../auth/model/jwt-user';
+import { SkipJwtAuth } from '../auth/skip-jwt-auth.decorator';
 import { User } from '../user/models/user.model';
 import { CurrentUser } from '../util/current-user-decorator';
 import { GpsCoordinate } from './models/gps-coordinate.model';
@@ -21,6 +22,7 @@ export class PciResolver {
   ) { }
 
   @Query(() => [Pci], { name: 'Pcis', nullable: 'items' })
+  @SkipJwtAuth()
   async getAllPci() {
     return await this._pciSerive.getAllPcis();
   }

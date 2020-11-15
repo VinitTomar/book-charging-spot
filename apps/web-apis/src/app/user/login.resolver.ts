@@ -27,7 +27,8 @@ export class LoginResolver {
     if (passwordMatched) {
       return new JwtToken(await this._tokenService.getToken({
         username: user.email,
-        sub: user.id
+        sub: user.id,
+        role: user.userType
       }));
     } else {
       throw new UnauthorizedException('Invalid login credentials.');

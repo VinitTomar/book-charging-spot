@@ -2,7 +2,9 @@ import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { JwtAuth } from '../auth/jwt-auth.guard';
 import { JwtUser } from '../auth/model/jwt-user';
+import { Role } from '../auth/role.decorator';
 import { SkipJwtAuth } from '../auth/skip-jwt-auth.decorator';
+import { UserTypes } from '../user/config/user-types';
 import { User } from '../user/models/user.model';
 import { CurrentUser } from '../util/current-user-decorator';
 import { GpsCoordinate } from './models/gps-coordinate.model';
@@ -28,6 +30,7 @@ export class PciResolver {
   }
 
   @Mutation(() => Pci, { name: 'AddPci' })
+  @Role(UserTypes.PCI_OWNER)
   async addNewPci(@Args('addPci', { type: () => AddPci }) addPci: AddPci, @CurrentUser() user: JwtUser) {
     return await this._pciSerive.addPci(addPci, user);
   }

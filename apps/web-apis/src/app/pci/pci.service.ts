@@ -50,7 +50,7 @@ export class PciService {
 
     const savedPci = await this._pciRepository.save(createdPci);
 
-    Promise.all(
+    await Promise.all(
       addPci.chargers.map(charger => {
         const createdCharger = this._pciChargerRepository.create(charger);
         createdCharger.pci = savedPci;
@@ -65,17 +65,9 @@ export class PciService {
     return await this._pciChargerRepository.find({ pci });
   }
 
-  // async getPciAddress(pci: Pci): Promise<PciAddress> {
-  //   return await this._pciAddressRepository.findOne({ pci });
-  // }
-
-  // async getPciGpsCoordinates(pci: Pci): Promise<GpsCoordinate> {
-  //   return await this._gpsCoordinatesRepository.findOne({ pci });
-  // }
-
-  // async getPciOwner(pci: Pci): Promise<User> {
-  //   return (await this._pciRepository.findOne(pci.id, { relations: ['owner'] })).owner;
-  // }
+  async getPciOwner(pci: Pci): Promise<User> {
+    return (await this._pciRepository.findOne(pci.id, { relations: ['owner'] })).owner;
+  }
 
 
 }

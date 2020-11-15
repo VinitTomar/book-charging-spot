@@ -43,19 +43,16 @@ export class PciResolver {
   @ResolveField(() => PciAddress, { name: 'address' })
   async getPciAddress(@Parent() pci: Pci) {
     return pci.address;
-    // return await this._pciSerive.getPciAddress(pci);
   }
 
   @ResolveField(() => GpsCoordinate, { name: 'gpsCoordinate' })
   async getGpsCoordinates(@Parent() pci: Pci) {
     return pci.gpsCoordinate;
-    // return await this._pciSerive.getPciGpsCoordinates(pci);
   }
 
   @ResolveField(() => User, { name: 'owner' })
   async getPciOwner(@Parent() pci: Pci) {
-    return pci.owner;
-    // return await this._pciSerive.getPciOwner(pci);
+    return await this._pciSerive.getPciOwner(pci);
   }
 
 }

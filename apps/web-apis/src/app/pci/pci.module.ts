@@ -7,6 +7,8 @@ import { GpsCoordinate } from './models/gps-coordinate.model';
 import { PciAddress } from './models/pci-address.model';
 import { PciCharger } from './models/pci-charger.model';
 import { Pci } from './models/pci.model';
+import { PciChargerResolver } from './pci-charger.resolver';
+import { PciChargerSerive } from './pci-charger.service';
 import { PciResolver } from './pci.resolver';
 import { PciService } from './pci.service';
 import { IsPciNameAlreadyExistConstraint } from './validators/is-pci-name-already-exist';
@@ -21,6 +23,8 @@ import { IsPciNameAlreadyExistConstraint } from './validators/is-pci-name-alread
     ChargerTypeResolver,
     PciResolver,
     PciService,
+    PciChargerResolver,
+    PciChargerSerive,
     IsPciNameAlreadyExistConstraint
   ],
 })

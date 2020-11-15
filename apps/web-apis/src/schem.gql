@@ -72,6 +72,8 @@ enum UserTypes {
 
 type Query {
   ChargerType(chargerType: ChargerTypes!): String!
+  PciChargers(chargerType: ChargerTypes!): [PciCharger]
+  PciCharger(chargerId: ID!): PciCharger!
   Pcis: [Pci]!
   UserAddresses: [UserAddress]
   UserAddress(id: ID!): UserAddress!

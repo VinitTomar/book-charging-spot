@@ -91,6 +91,8 @@ input Login {
 
 type Mutation {
   AddPci(addPci: AddPci!): Pci!
+  UpdatePci(id: ID!, updatePci: UpdatePci!): Pci!
+  RemoveSameTypePciChargers(pciId: ID!, type: ChargerTypes!): String!
   DeletePci(pciId: ID!): String!
   AddUserAddress(addUserAddress: AddUserAddress!): UserAddress!
   UpdateUserAddress(updateUserAddress: UpdateUserAddress!): UserAddress!
@@ -104,7 +106,7 @@ input AddPci {
   name: String!
   highwayName: String!
   address: AddPciAddress!
-  chargers: [AddPciCharger!]!
+  chargers: [AddOrUpdatePciCharger!]!
   gpsCoordinate: AddGpsCoordinates!
 }
 
@@ -117,7 +119,7 @@ input AddPciAddress {
   pincode: String!
 }
 
-input AddPciCharger {
+input AddOrUpdatePciCharger {
   chargerType: ChargerTypes!
   numberOfPlatforms: Int!
 }
@@ -125,6 +127,30 @@ input AddPciCharger {
 input AddGpsCoordinates {
   latitude: Float!
   longitude: Float!
+}
+
+input UpdatePci {
+  name: String
+  highwayName: String
+  chargers: [AddOrUpdatePciCharger]
+  address: UpdatePciAddress
+  gpsCoordinate: UpdateGpsCoordinates
+}
+
+input UpdatePciAddress {
+  id: ID!
+  line1: String
+  line2: String
+  landmark: String
+  district: String
+  state: String
+  pincode: String
+}
+
+input UpdateGpsCoordinates {
+  id: ID!
+  latitude: Float
+  longitude: Float
 }
 
 input AddUserAddress {

@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from '../user/models/user.model';
+import { ChargerTypes } from './config/charger-types';
 import { GpsCoordinate } from './models/gps-coordinate.model';
 import { PciAddress } from './models/pci-address.model';
 import { PciCharger } from './models/pci-charger.model';
@@ -73,11 +74,11 @@ export class PciService {
     return savedPci;
   }
 
-  async updatePci(updatePci: UpdatePci, user: User): Promise<Pci> {
-    let currentPci = await this._pciRepository.findOne({ id: updatePci.id, owner: user });
+  async updatePci(pciId: string, updatePci: UpdatePci, user: User): Promise<Pci> {
+    let currentPci = await this._pciRepository.findOne({ id: pciId, owner: user });
 
     if (!currentPci) {
-      throw new BadRequestException(`No Pci found with id: ${updatePci.id}`);
+      throw new BadRequestException(`No Pci found with id: ${pciId}`);
     }
 
     currentPci = Object.assign(currentPci, updatePci);
@@ -100,7 +101,52 @@ export class PciService {
       savedPci.address = savedGpsCoordinates;
     }
 
+    if (updatePci?.chargers?.length > 0) {
+      const updatePciChargers = updatePci.chargers;
+
+      const savedPciChargers = await Promise.all(
+        updatePciChargers.map(async updateCharger => {
+          let currentCharger = await this._pciChargerRepository.findOne({
+            chargerType: updateCharger.chargerType,
+            pci: currentPci
+          });
+
+          if (currentCharger) {
+            currentCharger = Object.assign(currentCharger, updateCharger);
+          } else {
+            currentCharger = this._pciChargerRepository.create(updateCharger);
+          }
+
+          const savedCharger = await this._pciChargerRepository.save(currentCharger);
+
+          return savedCharger;
+        })
+      );
+
+      savedPci.chargers = savedPciChargers;
+    }
+
     return savedPci;
+  }
+
+  async removeSameTypePciCharger(pciId: string, chargerType: ChargerTypes, user: User) {
+    const currentPci = (await this._pciRepository.findOne(
+      { id: pciId, owner: user },
+      { relations: ['chargers'] })
+    );
+
+    if (!currentPci) {
+      throw new BadRequestException(`No Pci found with id: ${pciId}`);
+    }
+
+    if (currentPci.chargers.length === 1) {
+      throw new BadRequestException(`Pci ${pciId} has only ${chargerType} type of chargers`);
+    }
+
+    const currentChargers = currentPci.chargers.find(charger => charger.chargerType === chargerType);
+
+    return await this._pciChargerRepository.delete(currentChargers);
+
   }
 
   async deletePci(pciId: string, user: User): Promise<DeleteResult> {

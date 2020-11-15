@@ -36,8 +36,8 @@ export class PciResolver {
   }
 
   @Mutation(() => String, { name: 'DeletePci' })
-  async deletePci(@Args('pciId', { type: () => ID }) pciId: string) {
-    const deleted = await this._pciSerive.deletePci(pciId);
+  async deletePci(@Args('pciId', { type: () => ID }) pciId: string, @CurrentUser() user: JwtUser) {
+    const deleted = await this._pciSerive.deletePci(pciId, user);
 
     if (deleted.affected > 0)
       return `Pci with id: ${pciId} is deleted.`

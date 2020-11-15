@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from '../user/models/user.model';
@@ -7,6 +7,7 @@ import { PciAddress } from './models/pci-address.model';
 import { PciCharger } from './models/pci-charger.model';
 import { Pci } from './models/pci.model';
 import { AddPci } from './payloads/add-pci';
+import { UpdatePci } from './payloads/update-pci';
 
 
 @Injectable()
@@ -36,6 +37,14 @@ export class PciService {
     return await this._pciRepository.findOne(pciId);
   }
 
+  async getPciChargers(pci: Pci): Promise<PciCharger[]> {
+    return await this._pciChargerRepository.find({ pci });
+  }
+
+  async getPciOwner(pci: Pci): Promise<User> {
+    return (await this._pciRepository.findOne(pci.id, { relations: ['owner'] })).owner;
+  }
+
   async addPci(addPci: AddPci, user: User): Promise<Pci> {
     const createdPci = this._pciRepository.create(addPci);
     createdPci.owner = user;
@@ -51,7 +60,7 @@ export class PciService {
     const savedPciAddress = await this._pciAddressRepository.save(createdPciAddress);
     savedPci.address = savedPciAddress;
 
-    await Promise.all(
+    const savedPciChargers = await Promise.all(
       addPci.chargers.map(charger => {
         const createdCharger = this._pciChargerRepository.create(charger);
         createdCharger.pci = savedPci;
@@ -59,19 +68,43 @@ export class PciService {
       })
     );
 
+    savedPci.chargers = savedPciChargers;
+
     return savedPci;
   }
 
-  async getPciChargers(pci: Pci): Promise<PciCharger[]> {
-    return await this._pciChargerRepository.find({ pci });
+  async updatePci(updatePci: UpdatePci, user: User): Promise<Pci> {
+    let currentPci = await this._pciRepository.findOne({ id: updatePci.id, owner: user });
+
+    if (!currentPci) {
+      throw new BadRequestException(`No Pci found with id: ${updatePci.id}`);
+    }
+
+    currentPci = Object.assign(currentPci, updatePci);
+
+    const savedPci = await this._pciRepository.save(currentPci);
+
+    if (updatePci.address) {
+      const updatePciAddress = updatePci.address;
+      let currentPciAddress = await this._pciAddressRepository.findOne({ id: updatePciAddress.id, pci: savedPci });
+      currentPciAddress = Object.assign(currentPciAddress, updatePciAddress);
+      const savedPciAddress = await this._pciAddressRepository.save(currentPciAddress);
+      savedPci.address = savedPciAddress;
+    }
+
+    if (updatePci.gpsCoordinate) {
+      const updateGpsCoordinate = updatePci.gpsCoordinate;
+      let currentGpsCoordinate = await this._pciAddressRepository.findOne({ id: updateGpsCoordinate.id, pci: savedPci });
+      currentGpsCoordinate = Object.assign(currentGpsCoordinate, updateGpsCoordinate);
+      const savedGpsCoordinates = await this._pciAddressRepository.save(currentGpsCoordinate);
+      savedPci.address = savedGpsCoordinates;
+    }
+
+    return savedPci;
   }
 
-  async getPciOwner(pci: Pci): Promise<User> {
-    return (await this._pciRepository.findOne(pci.id, { relations: ['owner'] })).owner;
-  }
-
-  async deletePci(pciId: string): Promise<DeleteResult> {
-    return await this._pciRepository.delete(pciId);
+  async deletePci(pciId: string, user: User): Promise<DeleteResult> {
+    return await this._pciRepository.delete({ id: pciId, owner: user });
   }
 
 }

@@ -91,6 +91,7 @@ input Login {
 
 type Mutation {
   AddPci(addPci: AddPci!): Pci!
+  DeletePci(pciId: ID!): String!
   AddUserAddress(addUserAddress: AddUserAddress!): UserAddress!
   UpdateUserAddress(updateUserAddress: UpdateUserAddress!): UserAddress!
   DeleteUserAddress(id: ID!): String!

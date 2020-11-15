@@ -22,7 +22,7 @@ export class PciCharger {
   @Field(() => Int)
   numberOfPlatforms: number;
 
-  @ManyToOne(() => Pci, (pci: Pci) => pci.chargers)
+  @ManyToOne(() => Pci, (pci: Pci) => pci.chargers, { cascade: true, onDelete: 'CASCADE' })
   @Field(() => Pci)
   pci: Pci
 

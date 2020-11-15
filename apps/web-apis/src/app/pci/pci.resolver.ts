@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { JwtAuth } from '../auth/jwt-auth.guard';
 import { JwtUser } from '../auth/model/jwt-user';
 import { Role } from '../auth/role.decorator';
@@ -33,6 +33,16 @@ export class PciResolver {
   @Role(UserTypes.PCI_OWNER)
   async addNewPci(@Args('addPci', { type: () => AddPci }) addPci: AddPci, @CurrentUser() user: JwtUser) {
     return await this._pciSerive.addPci(addPci, user);
+  }
+
+  @Mutation(() => String, { name: 'DeletePci' })
+  async deletePci(@Args('pciId', { type: () => ID }) pciId: string) {
+    const deleted = await this._pciSerive.deletePci(pciId);
+
+    if (deleted.affected > 0)
+      return `Pci with id: ${pciId} is deleted.`
+
+    return `No pci found with id: ${pciId}`;
   }
 
   @ResolveField(() => [PciCharger], { name: 'chargers' })

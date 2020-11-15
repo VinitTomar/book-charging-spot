@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { User } from '../user/models/user.model';
 import { GpsCoordinate } from './models/gps-coordinate.model';
 import { PciAddress } from './models/pci-address.model';
@@ -39,16 +39,17 @@ export class PciService {
   async addPci(addPci: AddPci, user: User): Promise<Pci> {
     const createdPci = this._pciRepository.create(addPci);
     createdPci.owner = user;
+    const savedPci = await this._pciRepository.save(createdPci);
 
     const createdGpsCoordinates = this._gpsCoordinatesRepository.create(addPci.gpsCoordinate);
+    createdGpsCoordinates.pci = savedPci;
     const savedGpsCoordinates = await this._gpsCoordinatesRepository.save(createdGpsCoordinates);
-    createdPci.gpsCoordinate = savedGpsCoordinates;
+    savedPci.gpsCoordinate = savedGpsCoordinates;
 
     const createdPciAddress = this._pciAddressRepository.create(addPci.address);
+    createdPciAddress.pci = savedPci;
     const savedPciAddress = await this._pciAddressRepository.save(createdPciAddress);
-    createdPci.address = savedPciAddress;
-
-    const savedPci = await this._pciRepository.save(createdPci);
+    savedPci.address = savedPciAddress;
 
     await Promise.all(
       addPci.chargers.map(charger => {
@@ -69,5 +70,8 @@ export class PciService {
     return (await this._pciRepository.findOne(pci.id, { relations: ['owner'] })).owner;
   }
 
+  async deletePci(pciId: string): Promise<DeleteResult> {
+    return await this._pciRepository.delete(pciId);
+  }
 
 }

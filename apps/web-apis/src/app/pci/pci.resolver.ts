@@ -31,6 +31,17 @@ export class PciResolver {
     return await this._pciSerive.getAllPcis();
   }
 
+  @Query(() => Pci, { name: "Pci", nullable: true })
+  @SkipJwtAuth()
+  async getPciById(@Args('pciId', { type: () => ID }) pciId: string): Promise<Pci> {
+    return await this._pciSerive.findPciById(pciId);
+  }
+
+  @Query(() => [Pci], { name: 'OwnerPcis', nullable: 'itemsAndList' })
+  async getOwnerPcis(@CurrentUser() user: JwtUser) {
+    return await this._pciSerive.getOwnersPcis(user);
+  }
+
   @Mutation(() => Pci, { name: 'AddPci' })
   @Role(UserTypes.PCI_OWNER)
   async addNewPci(@Args('addPci', { type: () => AddPci }) addPci: AddPci, @CurrentUser() user: JwtUser) {

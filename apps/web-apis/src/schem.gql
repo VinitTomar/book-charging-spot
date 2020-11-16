@@ -75,6 +75,8 @@ type Query {
   PciChargers(chargerType: ChargerTypes!): [PciCharger]
   PciCharger(chargerId: ID!): PciCharger!
   Pcis: [Pci]!
+  Pci(pciId: ID!): Pci
+  OwnerPcis: [Pci]
   UserAddresses: [UserAddress]
   UserAddress(id: ID!): UserAddress!
   Users: [User]!

@@ -1,11 +1,7 @@
-import { InputType, IntersectionType, PartialType, PickType } from '@nestjs/graphql';
-import { PciAddress } from '../models/pci-address.model';
+import { InputType, PartialType } from '@nestjs/graphql';
 import { AddPciAddress } from './add-pci-address';
 
 
 @InputType()
-export class UpdatePciAddress extends IntersectionType(
-  PickType(PciAddress, ['id'] as const, InputType),
-  PartialType(AddPciAddress)
-)
+export class UpdatePciAddress extends PartialType(AddPciAddress)
 { }

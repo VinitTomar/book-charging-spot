@@ -42,6 +42,14 @@ export class PciService {
     return await this._pciChargerRepository.find({ pci });
   }
 
+  async getPciAddress(pci: Pci): Promise<PciAddress> {
+    return await this._pciAddressRepository.findOne({ pci });
+  }
+
+  async getPciGpsCoordinates(pci: Pci): Promise<GpsCoordinate> {
+    return await this._gpsCoordinatesRepository.findOne({ pci });
+  }
+
   async getPciOwner(pci: Pci): Promise<User> {
     return (await this._pciRepository.findOne(pci.id, { relations: ['owner'] })).owner;
   }
@@ -61,13 +69,13 @@ export class PciService {
     const savedPciAddress = await this._pciAddressRepository.save(createdPciAddress);
     savedPci.address = savedPciAddress;
 
-    const savedPciChargers = await Promise.all(
-      addPci.chargers.map(charger => {
-        const createdCharger = this._pciChargerRepository.create(charger);
-        createdCharger.pci = savedPci;
-        return this._pciChargerRepository.save(createdCharger);
-      })
-    );
+    const createdPciChargers = addPci.chargers.map(charger => {
+      const createdCharger = this._pciChargerRepository.create(charger);
+      createdCharger.pci = savedPci;
+      return createdCharger;
+    })
+
+    const savedPciChargers = await this._pciChargerRepository.save(createdPciChargers);
 
     savedPci.chargers = savedPciChargers;
 
@@ -87,7 +95,7 @@ export class PciService {
 
     if (updatePci.address) {
       const updatePciAddress = updatePci.address;
-      let currentPciAddress = await this._pciAddressRepository.findOne({ id: updatePciAddress.id, pci: savedPci });
+      let currentPciAddress = await this._pciAddressRepository.findOne({ pci: savedPci });
       currentPciAddress = Object.assign(currentPciAddress, updatePciAddress);
       const savedPciAddress = await this._pciAddressRepository.save(currentPciAddress);
       savedPci.address = savedPciAddress;
@@ -95,34 +103,32 @@ export class PciService {
 
     if (updatePci.gpsCoordinate) {
       const updateGpsCoordinate = updatePci.gpsCoordinate;
-      let currentGpsCoordinate = await this._pciAddressRepository.findOne({ id: updateGpsCoordinate.id, pci: savedPci });
+      let currentGpsCoordinate = await this._gpsCoordinatesRepository.findOne({ pci: savedPci });
       currentGpsCoordinate = Object.assign(currentGpsCoordinate, updateGpsCoordinate);
-      const savedGpsCoordinates = await this._pciAddressRepository.save(currentGpsCoordinate);
-      savedPci.address = savedGpsCoordinates;
+      const savedGpsCoordinates = await this._gpsCoordinatesRepository.save(currentGpsCoordinate);
+      savedPci.gpsCoordinate = savedGpsCoordinates;
     }
 
     if (updatePci?.chargers?.length > 0) {
-      const updatePciChargers = updatePci.chargers;
+      const chargerForUpdateOrSave = updatePci.chargers;
+      const currentChargers = await this._pciChargerRepository.find({ pci: savedPci });
 
-      const savedPciChargers = await Promise.all(
-        updatePciChargers.map(async updateCharger => {
-          let currentCharger = await this._pciChargerRepository.findOne({
-            chargerType: updateCharger.chargerType,
-            pci: currentPci
-          });
+      const createdChargers = chargerForUpdateOrSave.map(updateCharger => {
+        let currentCharger = currentChargers.find(chrg => chrg.chargerType === updateCharger.chargerType);
 
-          if (currentCharger) {
-            currentCharger = Object.assign(currentCharger, updateCharger);
-          } else {
-            currentCharger = this._pciChargerRepository.create(updateCharger);
-          }
+        if (currentCharger) {
+          currentCharger = Object.assign(currentCharger, updateCharger);
+          currentCharger.pci = savedPci;
+          return currentCharger;
+        }
 
-          const savedCharger = await this._pciChargerRepository.save(currentCharger);
+        const createdCharger = this._pciChargerRepository.create(updateCharger);
+        createdCharger.pci = savedPci;
 
-          return savedCharger;
-        })
-      );
+        return createdCharger;
+      });
 
+      const savedPciChargers = await this._pciChargerRepository.save(createdChargers);
       savedPci.chargers = savedPciChargers;
     }
 

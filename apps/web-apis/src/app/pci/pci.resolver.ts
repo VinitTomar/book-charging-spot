@@ -74,18 +74,19 @@ export class PciResolver {
   }
 
   @ResolveField(() => [PciCharger], { name: 'chargers' })
-  async getPciChargers(@Parent() pci: Pci) {
-    return await this._pciSerive.getPciChargers(pci);
+  async getPciChargers(@Parent() pci: Pci): Promise<PciCharger[]> {
+    const chargers = this._pciSerive.getPciChargers(pci);
+    return await chargers;
   }
 
   @ResolveField(() => PciAddress, { name: 'address' })
   async getPciAddress(@Parent() pci: Pci) {
-    return pci.address;
+    return await this._pciSerive.getPciAddress(pci);
   }
 
   @ResolveField(() => GpsCoordinate, { name: 'gpsCoordinate' })
   async getGpsCoordinates(@Parent() pci: Pci) {
-    return pci.gpsCoordinate;
+    return await this._pciSerive.getPciGpsCoordinates(pci);
   }
 
   @ResolveField(() => User, { name: 'owner' })

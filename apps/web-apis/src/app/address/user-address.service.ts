@@ -4,7 +4,7 @@ import { DeleteResult, Repository } from 'typeorm';
 import { User } from '../user/models/user.model';
 import { UserAddress } from './models/user-address';
 import { AddUserAddress } from './payloads/add-user-address';
-import { UpdateAddress } from './payloads/update-address';
+import { UpdateUserAddress } from './payloads/update-address';
 
 @Injectable()
 export class UserAddressService {
@@ -34,13 +34,13 @@ export class UserAddressService {
     return await this._userAddressRepository.save(newAddress);
   }
 
-  async updateUserAddress(addressId: string, updateAddress: UpdateAddress, user: User): Promise<UserAddress> {
+  async updateUserAddress(addressId: string, UpdateUserAddress: UpdateUserAddress, user: User): Promise<UserAddress> {
     let currentAddress = await this.getUserAddressById(addressId, user);
     if (!currentAddress) {
       throw new BadRequestException(`No address found with id: ${addressId}`);
     }
 
-    currentAddress = Object.assign(currentAddress, updateAddress);
+    currentAddress = Object.assign(currentAddress, UpdateUserAddress);
 
     return await this._userAddressRepository.save(currentAddress);
   }
@@ -48,6 +48,10 @@ export class UserAddressService {
   async deleteUserAddress(addressId: string, user: User): Promise<DeleteResult> {
     const deletedResult = await this._userAddressRepository.delete({ id: addressId, user });
     return deletedResult;
+  }
+
+  async getAddressUser(addressId: string): Promise<User> {
+    return (await this._userAddressRepository.findOne(addressId, { relations: ['user'] })).user;
   }
 
 }

@@ -1,7 +1,9 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { UserAddress } from '../address/models/user-address';
 import { JwtAuth } from '../auth/jwt-auth.guard';
 import { JwtUser } from '../auth/model/jwt-user';
+import { Pci } from '../pci/models/pci.model';
 import { CurrentUser } from '../util/current-user-decorator';
 import { VerifyEmailMessageTypes } from './config/verify-email-message-types';
 import { User } from './models/user.model';
@@ -37,6 +39,17 @@ export class UserResolver {
   @Mutation(() => VerifyEmailMessageTypes, { name: "VerifyEmail" })
   async verifyEmail(@Args('verifyEmail') verifyEmail: VerifyEmail) {
     return await this._userService.verifyEmail(verifyEmail);
+  }
+
+
+  @ResolveField(() => [UserAddress], { name: 'addresses', nullable: 'itemsAndList' })
+  async getUserAddress(@Parent() user: User) {
+    return await this._userService.getUserAddresses(user.id);
+  }
+
+  @ResolveField(() => [Pci], { name: 'pcis', nullable: 'itemsAndList' })
+  async getUserPcis(@Parent() user: User) {
+    return await this._userService.getUserPcis(user.id);
   }
 
 }

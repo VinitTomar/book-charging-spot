@@ -9,6 +9,7 @@ import { User } from '../user/models/user.model';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+
   constructor(
     @InjectRepository(User) private readonly _userReposity: Repository<User>,
   ) {
@@ -23,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const currentUser = await this._userReposity.findOne({ id: payload.sub });
 
     if (!currentUser) {
-      throw new UnauthorizedException('Invalid jwt token or user does not exist');
+      throw new UnauthorizedException('Invalid jwt token or user does not exist.');
     }
 
     return currentUser;

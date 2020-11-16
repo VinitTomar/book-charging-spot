@@ -14,12 +14,54 @@ type UserAddress {
   user: User!
 }
 
+type GpsCoordinate {
+  id: ID!
+  latitude: Float!
+  longitude: Float!
+}
+
+type PciAddress {
+  id: ID!
+  line1: String!
+  line2: String!
+  landmark: String!
+  district: String!
+  state: String!
+  pincode: String!
+}
+
+type PciCharger {
+  id: ID!
+  chargerType: ChargerTypes!
+  numberOfPlatforms: Int!
+  pci: Pci!
+}
+
+enum ChargerTypes {
+  FAST_CCS
+  FAST_CHA_DE_MO
+  FAST_TYPE_2_AC
+  MODERATE_BHARAT_DC
+  SLOW_BHARAT_AC
+}
+
+type Pci {
+  id: ID!
+  name: String!
+  highwayName: String!
+  chargers: [PciCharger!]!
+  address: PciAddress!
+  gpsCoordinate: GpsCoordinate!
+  owner: User!
+}
+
 type User {
   id: ID!
   fullname: String!
   email: String!
   userType: UserTypes!
   emailVerified: Boolean
+  pcis: [Pci]
   addresses: [UserAddress]
 }
 
@@ -29,6 +71,12 @@ enum UserTypes {
 }
 
 type Query {
+  ChargerType(chargerType: ChargerTypes!): String!
+  PciChargers(chargerType: ChargerTypes!): [PciCharger]
+  PciCharger(chargerId: ID!): PciCharger!
+  Pcis: [Pci]!
+  Pci(pciId: ID!): Pci
+  OwnerPcis: [Pci]
   UserAddresses: [UserAddress]
   UserAddress(id: ID!): UserAddress!
   Users: [User]!
@@ -44,12 +92,65 @@ input Login {
 }
 
 type Mutation {
+  AddPci(addPci: AddPci!): Pci!
+  UpdatePci(id: ID!, updatePci: UpdatePci!): Pci!
+  RemoveSameTypePciChargers(pciId: ID!, type: ChargerTypes!): String!
+  DeletePci(pciId: ID!): String!
   AddUserAddress(addUserAddress: AddUserAddress!): UserAddress!
-  UpdateUserAddress(updateUserAddress: UpdateAddress!): UserAddress!
+  UpdateUserAddress(updateUserAddress: UpdateUserAddress!): UserAddress!
   DeleteUserAddress(id: ID!): String!
   AddUser(addUser: AddUser!): User!
   UpdateUser(updateUser: UpdateUser!): User!
   VerifyEmail(verifyEmail: VerifyEmail!): VerifyEmailMessageTypes!
+}
+
+input AddPci {
+  name: String!
+  highwayName: String!
+  address: AddPciAddress!
+  chargers: [AddOrUpdatePciCharger!]!
+  gpsCoordinate: AddGpsCoordinates!
+}
+
+input AddPciAddress {
+  line1: String!
+  line2: String!
+  landmark: String!
+  district: String!
+  state: String!
+  pincode: String!
+}
+
+input AddOrUpdatePciCharger {
+  chargerType: ChargerTypes!
+  numberOfPlatforms: Int!
+}
+
+input AddGpsCoordinates {
+  latitude: Float!
+  longitude: Float!
+}
+
+input UpdatePci {
+  name: String
+  highwayName: String
+  chargers: [AddOrUpdatePciCharger]
+  address: UpdatePciAddress
+  gpsCoordinate: UpdateGpsCoordinates
+}
+
+input UpdatePciAddress {
+  line1: String
+  line2: String
+  landmark: String
+  district: String
+  state: String
+  pincode: String
+}
+
+input UpdateGpsCoordinates {
+  latitude: Float
+  longitude: Float
 }
 
 input AddUserAddress {
@@ -61,15 +162,15 @@ input AddUserAddress {
   pincode: String!
 }
 
-input UpdateAddress {
+input UpdateUserAddress {
   id: ID!
+  current: Boolean
   line1: String
   line2: String
   landmark: String
   district: String
   state: String
   pincode: String
-  current: Boolean
 }
 
 input AddUser {

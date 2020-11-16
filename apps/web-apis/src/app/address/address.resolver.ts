@@ -1,11 +1,12 @@
 import { UseGuards } from '@nestjs/common';
-import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, ID, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { JwtAuth } from '../auth/jwt-auth.guard';
 import { JwtUser } from '../auth/model/jwt-user';
+import { User } from '../user/models/user.model';
 import { CurrentUser } from '../util/current-user-decorator';
 import { UserAddress } from './models/user-address';
 import { AddUserAddress } from './payloads/add-user-address';
-import { UpdateAddress } from './payloads/update-address';
+import { UpdateUserAddress } from './payloads/update-address';
 import { UserAddressService } from './user-address.service';
 
 @Resolver(() => UserAddress)
@@ -33,7 +34,7 @@ export class AddressResolver {
   }
 
   @Mutation(() => UserAddress, { name: 'UpdateUserAddress' })
-  async updateUserAddress(@Args('updateUserAddress') updateUserAddress: UpdateAddress, @CurrentUser() currentUser: JwtUser) {
+  async updateUserAddress(@Args('updateUserAddress') updateUserAddress: UpdateUserAddress, @CurrentUser() currentUser: JwtUser) {
     return await this._userAddressService.updateUserAddress(updateUserAddress.id, updateUserAddress, currentUser);
   }
 
@@ -48,5 +49,10 @@ export class AddressResolver {
     return `No address deleted`;
   }
 
+
+  @ResolveField(() => User, { name: 'user' })
+  async getAddressUser(@Parent() userAddress: UserAddress) {
+    return await this._userAddressService.getAddressUser(userAddress.id);
+  }
 
 }

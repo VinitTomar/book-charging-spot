@@ -1,3 +1,4 @@
+import { PciModule } from './pci/pci.module';
 import { AddressModule } from './address/address.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
@@ -8,6 +9,7 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
+    PciModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       ...environment.database,

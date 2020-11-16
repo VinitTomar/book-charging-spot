@@ -36,8 +36,4 @@ export class BaseAddress {
   @Field()
   pincode: string;
 
-  @Column({ default: false })
-  @Field()
-  current: boolean;
-
 }

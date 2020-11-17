@@ -1,3 +1,4 @@
+import { BookingModule } from './booking/booking.module';
 import { PciModule } from './pci/pci.module';
 import { AddressModule } from './address/address.module';
 import { MailerModule } from '@nestjs-modules/mailer';
@@ -9,6 +10,7 @@ import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
+    BookingModule,
     PciModule,
     TypeOrmModule.forRoot({
       type: 'postgres',

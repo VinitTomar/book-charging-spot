@@ -1,9 +1,9 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Min } from 'class-validator';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Booking } from '../../booking/models/booking.model';
 import { ChargerTypes } from '../config/charger-types';
 import { Pci } from './pci.model';
-
 
 @Entity({
   name: PciCharger.name
@@ -27,5 +27,8 @@ export class PciCharger {
   @ManyToOne(() => Pci, (pci: Pci) => pci.chargers, { cascade: true, onDelete: 'CASCADE' })
   @Field(() => Pci)
   pci: Pci
+
+  @OneToMany(() => Booking, (booking: Booking) => booking.charger)
+  bookings: Booking[];
 
 }

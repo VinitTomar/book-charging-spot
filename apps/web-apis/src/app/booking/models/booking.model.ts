@@ -1,7 +1,8 @@
-import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
+import { Field, GraphQLISODateTime, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { PciCharger } from '../../pci/models/pci-charger.model';
 import { Pci } from '../../pci/models/pci.model';
+import { User } from '../../user/models/user.model';
 import { BookingStatus } from '../config/booking-status';
 
 
@@ -20,7 +21,7 @@ export class Booking {
   start: Date;
 
   @Column()
-  @Field()
+  @Field(() => Int)
   duration: number;
 
   @Column({ type: 'varchar', length: 50 })
@@ -28,7 +29,7 @@ export class Booking {
   status: BookingStatus;
 
   @Column()
-  @Field()
+  @Field(() => Int)
   chargerIndex: number;
 
   @ManyToOne(() => Pci, (pci: Pci) => pci.bookings, { cascade: true, onDelete: 'CASCADE' })
@@ -38,4 +39,8 @@ export class Booking {
   @ManyToOne(() => PciCharger, (charger: PciCharger) => charger.bookings, { cascade: true, onDelete: 'CASCADE' })
   @Field(() => PciCharger)
   charger: PciCharger;
+
+  @ManyToOne(() => User, (booker: User) => booker.bookings, { cascade: true, onDelete: 'CASCADE' })
+  @Field(() => User)
+  booker: User;
 }

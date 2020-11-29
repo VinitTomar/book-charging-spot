@@ -14,6 +14,21 @@ type UserAddress {
   user: User!
 }
 
+type User {
+  id: ID!
+  fullname: String!
+  email: String!
+  userType: UserTypes!
+  emailVerified: Boolean
+  pcis: [Pci]
+  addresses: [UserAddress]
+}
+
+enum UserTypes {
+  PCI_OWNER
+  E_VEHICLE_OWNER
+}
+
 type GpsCoordinate {
   id: ID!
   latitude: Float!
@@ -28,6 +43,38 @@ type PciAddress {
   district: String!
   state: String!
   pincode: String!
+}
+
+type Pci {
+  id: ID!
+  name: String!
+  highwayName: String!
+  address: PciAddress!
+  gpsCoordinate: GpsCoordinate!
+  chargers: [PciCharger!]!
+  bookings: [Booking!]!
+  owner: User!
+}
+
+type Booking {
+  id: ID!
+  start: DateTime!
+  duration: Int!
+  status: BookingStatus!
+  chargerIndex: Int!
+  pci: Pci!
+  charger: PciCharger!
+  booker: User!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+enum BookingStatus {
+  CONFIRM
+  CANCEL
 }
 
 type PciCharger {
@@ -45,32 +92,8 @@ enum ChargerTypes {
   SLOW_BHARAT_AC
 }
 
-type Pci {
-  id: ID!
-  name: String!
-  highwayName: String!
-  chargers: [PciCharger!]!
-  address: PciAddress!
-  gpsCoordinate: GpsCoordinate!
-  owner: User!
-}
-
-type User {
-  id: ID!
-  fullname: String!
-  email: String!
-  userType: UserTypes!
-  emailVerified: Boolean
-  pcis: [Pci]
-  addresses: [UserAddress]
-}
-
-enum UserTypes {
-  PCI_OWNER
-  E_VEHICLE_OWNER
-}
-
 type Query {
+  Bookings: [Booking]!
   ChargerType(chargerType: ChargerTypes!): String!
   PciChargers(chargerType: ChargerTypes!): [PciCharger]
   PciCharger(chargerId: ID!): PciCharger!
@@ -92,6 +115,7 @@ input Login {
 }
 
 type Mutation {
+  AddBooking(addBooking: AddBooking!): Booking!
   AddPci(addPci: AddPci!): Pci!
   UpdatePci(id: ID!, updatePci: UpdatePci!): Pci!
   RemoveSameTypePciChargers(pciId: ID!, type: ChargerTypes!): String!
@@ -102,6 +126,13 @@ type Mutation {
   AddUser(addUser: AddUser!): User!
   UpdateUser(updateUser: UpdateUser!): User!
   VerifyEmail(verifyEmail: VerifyEmail!): VerifyEmailMessageTypes!
+}
+
+input AddBooking {
+  start: DateTime!
+  duration: Int!
+  chargerIndex: Int!
+  chargerId: ID!
 }
 
 input AddPci {
